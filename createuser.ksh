@@ -1,7 +1,15 @@
-#!/bin/ksh
+#!/bin/rksh
+trap "User wants to exit;exit" 2 3 9 15
+
+p()
+{
+    echo "${1}" | fmt -w 72
+}
+
+clear
+cat /usr/local/bbs/welcome.txt|fmt -w 72|more
 
 continue=false
-
 while [ ${continue} = "false" ] ; do
 	echo -n "Please select a username: "
 	read username
@@ -9,17 +17,16 @@ while [ ${continue} = "false" ] ; do
 	continue=true
 
 	if [[ ${#username} -lt 6 ]] ; then
-		echo "Usernames must be longer than 6 characters"
+		p "Usernames must be longer than 6 characters"
 		continue=false
 	fi
 	if [[ ${#username} -gt 16 ]] ; then
-		echo "Usernames must be shorter than 16 characters"
+		p "Usernames must be shorter than 16 characters"
 		continue=false
 	fi
 
-    valid='0-9a-z'
     if [[ ${username} != @([a-z])*@([0-9a-z]) ]]; then
-        echo "Usernames must only contain numbers and letters and start with a letter"
+        p "Usernames must only contain numbers and letters and start with a letter"
         continue=false
     fi    
 
@@ -32,3 +39,35 @@ while [ ${continue} = "false" ] ; do
 	fi
 done
 
+continue=false
+p "\nYour password will be emailed to you, once you log in you can change the password."
+while [ ${continue} = "false" ] ; do
+	echo -n "Please enter your email address: "
+	read email
+	email="$(echo ${email} | tr '[:upper:]' '[:lower:]')"
+	continue=true
+
+	if [[ ${continue} = "true" ]]; then
+		echo -n "You entered ${email}. Is this correct? (y/n) "
+		read yn
+		if [[ ${yn} != "y" ]]; then
+			continue=false
+		fi
+	fi
+
+done
+
+clear
+cat /usr/local/bbs/tos.txt |fmt -w 72 | more
+
+echo -n "\nCreate ${username} with the email address ${email}? "
+read yn
+
+if [[ ${yn} = "y" ]]; then
+    p "\nPlease check your email soon for your password. Accounts aren't automatically created, so it may be up to 24 before you will receive your password."
+    echo "${username},${email}" | tee -a newusers.csv
+else
+    p "Sorry to hear that, thank you for visiting."
+fi
+echo "\n\n\n\n"
+exit
