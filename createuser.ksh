@@ -16,6 +16,14 @@ while [ ${continue} = "false" ] ; do
 	username="$(echo ${username} | tr '[:upper:]' '[:lower:]')"
 	continue=true
 
+    eval "id -u ${username} > idout"
+    status=$? 
+
+    if [[ ${status} -eq 0 ]]; then
+        p "Username already in use"
+        continue=false
+    fi
+    
 	if [[ ${#username} -lt 6 ]] ; then
 		p "Usernames must be longer than 6 characters"
 		continue=false

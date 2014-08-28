@@ -1,0 +1,9 @@
+There is only Zuul.
+
+Here is your account information for the *There is only Zuul* BBS:
+
+Username: %%username%%
+Password: %%password%%
+
+Log in with ssh to zuul.gtia.com port 22666 or telnet to zuul.gtia.com port 23666.
+
