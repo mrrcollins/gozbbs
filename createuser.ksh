@@ -16,10 +16,12 @@ while [ ${continue} = "false" ] ; do
 	username="$(echo ${username} | tr '[:upper:]' '[:lower:]')"
 	continue=true
 
-    eval "id -u ${username} > idout"
-    status=$? 
+    eval "getent passwd|cut -f 1 -d ':' | grep -wq ${username}"
+    inpasswd=$? 
+    eval "cat newusers.csv | cut -f1 -d ','|grep -wq ${username}"
+    innewusers=$?
 
-    if [[ ${status} -eq 0 ]]; then
+    if [[ ${inpasswd} -eq 0 || ${innewusers} -eq 0 ]]; then
         p "Username already in use"
         continue=false
     fi

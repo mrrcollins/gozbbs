@@ -12,7 +12,7 @@ do
     
     if [[ ${yn} = "y" ]]; then
         PW=`pwgen -Av 8 1`
-        /usr/sbin/adduser -batch ${username} bbs ${email} ${PW} -shell lynx -class bbs -unencrypted
+        /usr/sbin/adduser -batch ${username} bbs ${username} ${PW} -shell lynx -class bbs -unencrypted
         cat emailwelcome.txt | sed "s/%%username%%/${username}/" | sed "s/%%password%%/${PW}/" | \
             ./sendEmail -xu ${EMAILUSERNAME} -xp ${EMAILPASSWORD} -u ${EMAILSUBJECT} -f ${EMAILFROM} -s ${EMAILSERVER} -t ${email}
     fi
